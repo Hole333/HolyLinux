@@ -1,0 +1,5 @@
+---
+const today = new Date();
+---
+<footer><div><strong>HolyLinux</strong><span>© {today.getFullYear()} · 使用 Astro 构建</span></div><nav><a href="/rss.xml">RSS</a><a href="https://github.com/Hole333/HolyLinux">GitHub</a></nav></footer>
+<style>footer{width:min(1080px,calc(100% - 32px));margin:4rem auto 0;padding:2rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:1rem}footer div,footer nav{display:flex;gap:1rem}footer strong{color:var(--text)}footer a{color:var(--muted)}@media(max-width:560px){footer{flex-direction:column}}</style>
