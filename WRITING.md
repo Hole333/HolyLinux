@@ -1,36 +1,40 @@
 # HaloMoon 内容发布
 
-HaloMoon 的长篇文章和学习笔记分开管理：
+## 学习笔记：一键发布
 
-- **文章**：保存在博客仓库 `HolyLinux`，适合正式教程和长文。
-- **学习笔记**：保存在独立仓库 `HaloMoon-Notes`，适合日常记录，目录会直接映射为博客分类和网址。
-
-## 最快发布学习笔记
-
-打开 `HaloMoon-Notes` 文件夹，双击：
+把普通 Markdown 文件放入对应分类目录：
 
 ```text
-manage-notes.cmd
+notes/structured_light/my-note.md
+```
+
+Markdown 第一行作为标题，父文件夹自动作为分类和标签：
+
+```markdown
+# 利用散斑嵌入条纹和查找表进行三维面形测量
+
+这里直接编写正文。
+```
+
+不需要填写摘要、标签、Front Matter 或 URL。写完后运行一次：
+
+Windows：
+
+```text
+publish-notes.cmd
 ```
 
 Linux：
 
 ```bash
-chmod +x manage-notes.sh
-./manage-notes.sh
+./publish-notes.sh
 ```
 
-选择“新建笔记并发布”，写完 Markdown 后保存。脚本会提交并推送 GitHub，随后自动更新博客。
+脚本会自动补齐元数据、提交 Git、推送 GitHub 并部署博客。删除 Markdown 文件后运行同一个命令，对应博客页面也会删除。
 
-```text
-notes/linux/network.md → /notes/linux/network/
-```
+## 正式文章
 
-删除笔记也使用同一个脚本。远端文件删除后，对应博客页面会在自动部署完成后消失。
-
-## 发布正式文章
-
-在博客项目根目录双击：
+Windows：
 
 ```text
 publish-article.cmd
@@ -39,14 +43,11 @@ publish-article.cmd
 Linux：
 
 ```bash
-chmod +x publish-article.sh
 ./publish-article.sh
 ```
 
 也可以运行：
 
-```powershell
+```bash
 npm run publish
 ```
-
-网页说明位于 `/blog/writing-guide/`。
