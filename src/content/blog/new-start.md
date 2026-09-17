@@ -2,7 +2,8 @@
 title: 'HolyLinux：新的开始'
 description: '从动态博客迁移到 Astro，用更少的运行组件保存更长久的内容。'
 pubDate: '2026-09-16'
-heroImage: '../../assets/blog-placeholder-3.jpg'
+heroImage: '../../assets/new-start.svg'
+tags: ['Astro', '博客']
 ---
 今天，HolyLinux 正式迁移到 Astro。
 
@@ -18,3 +19,5 @@ heroImage: '../../assets/blog-placeholder-3.jpg'
 - 更换托管平台时更容易迁移。
 
 接下来，这里会逐步记录 Linux、服务器和开发相关的实践。
+
+

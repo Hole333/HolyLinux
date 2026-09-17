@@ -1,11 +1,30 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-const posts = (await getCollection('blog')).sort((a,b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0,3);
 ---
-<!doctype html><html lang="zh-CN"><head><BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} /></head><body><Header /><main class="home"><section class="hero"><p class="eyebrow">Linux · 开发 · 长期主义</p><h1>把折腾过的系统，<br/><span>写成可复用的经验。</span></h1><p class="intro">HolyLinux 是一个关于 Linux、开发实践和个人项目的独立博客。这里没有信息流，只有经过整理、值得长期保存的内容。</p><div class="cta"><a href="/blog">开始阅读</a><a class="secondary" href="/about">关于本站</a></div></section><section class="latest"><div class="section-head"><div><small>Latest notes</small><h2>最近文章</h2></div><a href="/blog">查看全部 →</a></div><div class="post-list">{posts.map((post) => <article><FormattedDate date={post.data.pubDate}/><div><h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3><p>{post.data.description}</p></div><span>↗</span></article>)}</div></section></main><Footer /></body></html>
-<style>.home{width:min(1080px,calc(100% - 32px))}.hero{min-height:62vh;display:flex;flex-direction:column;justify-content:center;padding-block:3rem}.eyebrow,.section-head small{color:var(--accent-dark);font-size:.76rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.hero h1{max-width:900px;margin:.8rem 0 1.5rem}.hero h1 span{color:var(--accent-dark)}.intro{max-width:660px;color:var(--muted);font-size:1.08rem}.cta{display:flex;gap:.75rem;margin-top:1rem}.cta a{padding:.65rem 1rem;border:1px solid var(--accent-dark);border-radius:10px;background:var(--accent-dark);color:var(--bg);font-weight:700;text-decoration:none}.cta .secondary{border-color:var(--line);background:var(--surface);color:var(--text)}.latest{padding-top:4rem;border-top:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:1.5rem}.section-head h2{margin:.2rem 0 0}.section-head>a{color:var(--muted);font-size:.9rem}.post-list{border-top:1px solid var(--line)}article{display:grid;grid-template-columns:120px 1fr 28px;gap:1.2rem;padding:1.4rem 0;border-bottom:1px solid var(--line)}article time{color:var(--muted);font-size:.78rem}article h3{margin:0;font-size:1.2rem}article h3 a{color:var(--text);text-decoration:none}article p{margin:.25rem 0 0;color:var(--muted);font-size:.9rem}@media(max-width:640px){.hero{min-height:55vh}article{grid-template-columns:1fr 24px}article time{grid-column:1/-1}article p{display:none}}</style>
+<!doctype html>
+<html lang="zh-CN">
+<head><BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} /></head>
+<body class="home-page">
+	<Header />
+	<main class="profile-main">
+		<section class="profile" aria-labelledby="profile-name">
+			<img src="/avatar.svg" width="150" height="150" alt="HolyLinux 终端图标" />
+			<h1 id="profile-name">HolyLinux</h1>
+			<p>保持清醒，保持好奇，记录每一次有价值的折腾</p>
+			<nav class="socials" aria-label="社交链接">
+				<a href="https://github.com/Hole333/HolyLinux" aria-label="GitHub" title="GitHub">GH</a>
+				<a href="/blog" aria-label="文章" title="文章">文</a>
+				<a href="/tags" aria-label="标签" title="标签">#</a>
+				<a href="/rss.xml" aria-label="RSS" title="RSS">RSS</a>
+			</nav>
+		</section>
+	</main>
+	<Footer />
+</body>
+</html>
+<style>
+	.profile-main{display:grid;place-items:center;min-height:calc(100vh - var(--header-height) - var(--footer-height));padding-block:2rem}.profile{text-align:center}.profile img{width:150px;height:150px;margin-bottom:1rem;border-radius:48px;box-shadow:var(--shadow-soft)}.profile h1{margin:.2rem 0 .35rem;font-size:2.15rem}.profile p{max-width:580px;margin:0 auto;color:var(--secondary);font-size:1rem}.socials{display:flex;justify-content:center;align-items:center;gap:1.15rem;margin-top:1.15rem}.socials a{display:grid;place-items:center;min-width:30px;height:30px;color:var(--secondary);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem;font-weight:700;text-decoration:none;transition:color 150ms ease,transform 150ms ease}.socials a:hover{color:var(--primary);transform:translateY(-2px)}@media(max-width:640px){.profile img{width:120px;height:120px;border-radius:38px}.profile h1{font-size:1.85rem}.profile p{max-width:320px}}
+</style>

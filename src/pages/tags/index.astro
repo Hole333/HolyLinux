@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+const posts=(await getCollection('blog')).sort((a,b)=>b.data.pubDate.valueOf()-a.data.pubDate.valueOf());
+const tags=new Map<string,typeof posts>();
+for(const post of posts)for(const tag of post.data.tags){if(!tags.has(tag))tags.set(tag,[]);tags.get(tag)!.push(post)}
+---
+<!doctype html><html lang="zh-CN"><head><BaseHead title="标签 | HolyLinux" description="HolyLinux 文章标签"/></head><body><Header/><main class="tags-page"><h1>标签</h1><div class="tag-cloud">{Array.from(tags.entries()).map(([tag,list])=><a href={`#${encodeURIComponent(tag)}`}>{tag}<sup>{list.length}</sup></a>)}</div><div class="tag-groups">{Array.from(tags.entries()).map(([tag,list])=><section id={encodeURIComponent(tag)}><h2>#{tag}</h2>{list.map(post=><article><a href={`/blog/${post.id}/`}>{post.data.title}</a><time>{post.data.pubDate.toLocaleDateString('zh-CN')}</time></article>)}</section>)}</div></main><Footer/></body></html>
+<style>.tags-page{width:min(720px,calc(100% - 40px));padding-top:2.5rem}.tags-page>h1{margin:0 0 1.5rem;font-size:2.35rem}.tag-cloud{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:3rem}.tag-cloud a{padding:.4rem .8rem;border:1px solid var(--border-soft);border-radius:999px;background:var(--entry);text-decoration:none}.tag-cloud sup{margin-left:.35rem;color:var(--secondary);font-size:.68rem}.tag-groups section{scroll-margin-top:90px;margin:2.5rem 0}.tag-groups h2{font-size:1.35rem}.tag-groups article{display:flex;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border-soft)}.tag-groups article a{text-decoration:none}.tag-groups time{flex:none;color:var(--secondary);font-size:.78rem}@media(max-width:560px){.tag-groups article{flex-direction:column;gap:.15rem}}</style>

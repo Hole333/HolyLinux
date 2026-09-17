@@ -2,7 +2,8 @@
 title: 'Linux 服务器部署检查清单'
 description: '每次上线前都值得确认的服务、端口、日志、磁盘和回滚路径。'
 pubDate: '2026-09-10'
-heroImage: '../../assets/blog-placeholder-1.jpg'
+heroImage: '../../assets/server-checklist.svg'
+tags: ['Linux', '部署']
 ---
 部署完成不等于工作结束。至少还应该确认以下项目：
 
@@ -13,3 +14,5 @@ heroImage: '../../assets/blog-placeholder-1.jpg'
 5. 上一个版本是否可以快速恢复。
 
 对于静态网站，回滚通常只需要将 Web 根目录切换回上一份构建产物。
+
+
