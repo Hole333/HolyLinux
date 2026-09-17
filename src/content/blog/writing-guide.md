@@ -1,42 +1,49 @@
 ---
-title: 'HaloMoon 写作指南'
-description: '双击一个文件，写完文章后自动构建、提交并发布。'
+title: 'HaloMoon 内容发布指南'
+description: '通过两个 GitHub 仓库快速发布正式文章和 Markdown 学习笔记。'
 pubDate: '2026-09-17'
 updatedDate: '2026-09-17'
-tags: ['写作', 'Markdown']
+tags: ['写作', 'Markdown', 'GitHub']
 ---
-最快方式是直接双击项目根目录中的：
+HaloMoon 将内容分为两类：
+
+- **学习笔记**保存在独立的 `HaloMoon-Notes` 仓库，适合日常快速记录。
+- **正式文章**保存在 `HolyLinux` 博客仓库，适合完整教程和长文。
+
+## 最快发布学习笔记
+
+进入 `HaloMoon-Notes` 文件夹，双击：
+
+```text
+管理笔记.cmd
+```
+
+选择“新建笔记并发布”，输入分类、标题和链接名，写完 Markdown 后保存。脚本会自动提交并推送 GitHub，GitHub Actions 随后重新构建并部署博客。
+
+目录和博客网址一一对应：
+
+```text
+notes/linux/network.md
+→ https://www.halomoon.cn/notes/linux/network/
+```
+
+删除笔记也使用同一脚本；远端文件删除后，对应页面会随下一次部署一起消失。
+
+## 发布正式文章
+
+在博客源码目录双击：
 
 ```text
 发布文章.cmd
 ```
 
-脚本会询问文章标题、摘要、标签和链接名，然后自动打开记事本。**写完正文，保存并关闭记事本即可**，后续步骤全部自动完成：
-
-```text
-检查正文 → Astro 构建 → Git 提交 → 推送 GitHub → 自动部署服务器
-```
-
-通常推送后等待一两分钟，新文章就会出现在网站中。
-
-## 命令行方式
-
-也可以进入博客源码目录后运行：
+也可以运行：
 
 ```powershell
 npm run publish
 ```
 
-根据提示输入：
-
-```text
-文章标题：Linux 网络配置笔记
-一句话摘要：记录服务器网络配置和排错过程
-标签：Linux,网络
-英文链接名：linux-network-notes
-```
-
-链接名可以直接回车使用自动生成的值。记事本打开后，只写正文即可，不需要手动处理 Front Matter。
+输入标题、摘要、标签和英文链接名后，编辑生成的 Markdown 正文并保存。脚本会完成检查、构建、提交和推送。
 
 ## Markdown 示例
 
@@ -51,7 +58,7 @@ npm run publish
 > 这里是一段引用。
 ```
 
-代码块需要标注语言：
+代码块请标注语言：
 
 ```c
 #include <stdio.h>
@@ -60,15 +67,4 @@ int main(void) {
     printf("Hello, HaloMoon!\n");
     return 0;
 }
-```
-
-## 发布失败怎么办
-
-如果正文为空，脚本会保留文章文件但停止发布。补充正文后可以重新执行：
-
-```powershell
-npm run build
-git add .
-git commit -m "docs: publish article"
-git push
 ```

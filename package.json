@@ -11,7 +11,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "publish": "node scripts/publish.mjs"
+    "publish": "node scripts/publish.mjs",
+    "sync:notes": "node scripts/sync-notes.mjs",
+    "prebuild": "node scripts/sync-notes.mjs",
+    "predev": "node scripts/sync-notes.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
