@@ -2,44 +2,14 @@
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 ---
-<header class="site-header">
-	<nav aria-label="主导航">
-		<a class="wordmark" href="/" aria-label="HolyLinux 首页">{SITE_TITLE}</a>
-		<div class="nav-actions">
-			<div class="internal-links">
-				<HeaderLink href="/blog">文章</HeaderLink>
-				<HeaderLink href="/tags">标签</HeaderLink>
-				<HeaderLink href="/about">关于</HeaderLink>
-				<a href="https://github.com/Hole333/HolyLinux" target="_blank" rel="noreferrer">源码</a>
-			</div>
-			<button class="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
-				<svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.2A8.7 8.7 0 0 1 8.8 3.5 9 9 0 1 0 20.5 15.2Z" fill="currentColor"/></svg>
-				<svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-			</button>
-		</div>
-	</nav>
-</header>
+<header class="site-header"><nav aria-label="主导航"><a class="wordmark" href="/" aria-label="HolyLinux 首页">{SITE_TITLE}</a><div class="nav-actions"><div class="internal-links"><HeaderLink href="/blog">文章</HeaderLink><HeaderLink href="/tags">标签</HeaderLink><HeaderLink href="/blog/writing-guide/">写作</HeaderLink><HeaderLink href="/about">关于</HeaderLink><a href="https://github.com/Hole333/HolyLinux" target="_blank" rel="noreferrer">源码</a></div><button class="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.2A8.7 8.7 0 0 1 8.8 3.5 9 9 0 1 0 20.5 15.2Z" fill="currentColor"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></nav></header>
 <script>
-	const root = document.documentElement;
-	document.querySelector<HTMLButtonElement>('.theme-toggle')?.addEventListener('click', () => {
-		const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-		root.dataset.theme = next;
-		localStorage.setItem('holylinux-theme', next);
-	});
-	const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-	document.addEventListener('pointerdown', (event) => {
-		if (event.button !== 0 || event.pointerType === 'touch') return;
-		const ring = document.createElement('span');
-		ring.className = 'click-ring';
-		ring.style.left = `${event.clientX}px`;
-		ring.style.top = `${event.clientY}px`;
-		document.body.append(ring);
-		ring.animate([
-			{ transform: 'translate(-50%, -50%) scale(.72)', opacity: .65 },
-			{ transform: `translate(-50%, -50%) scale(${reduce.matches ? 1 : 1.45})`, opacity: 0 },
-		], { duration: reduce.matches ? 150 : 240, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }).onfinish = () => ring.remove();
-	});
+	const root=document.documentElement;
+	document.querySelector<HTMLButtonElement>('.theme-toggle')?.addEventListener('click',()=>{const next=root.dataset.theme==='dark'?'light':'dark';root.dataset.theme=next;localStorage.setItem('holylinux-theme',next)});
+	const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+	document.addEventListener('pointerdown',(event)=>{if(event.button!==0||event.pointerType==='touch')return;const ring=document.createElement('span');ring.className='click-ring';ring.style.left=`${event.clientX}px`;ring.style.top=`${event.clientY}px`;document.body.append(ring);ring.animate([{transform:'translate(-50%, -50%) scale(.72)',opacity:.65},{transform:`translate(-50%, -50%) scale(${reduce.matches?1:1.45})`,opacity:0}],{duration:reduce.matches?150:240,easing:'cubic-bezier(0.23, 1, 0.32, 1)'}).onfinish=()=>ring.remove()});
+	function enhanceCode(){document.querySelectorAll<HTMLPreElement>('pre').forEach(pre=>{if(pre.dataset.enhanced)return;pre.dataset.enhanced='true';pre.classList.add('code-window');const button=document.createElement('button');button.type='button';button.className='copy-code';button.setAttribute('aria-label','复制代码');button.title='复制代码';button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';button.addEventListener('click',async()=>{const code=pre.querySelector('code')?.textContent??pre.textContent??'';await navigator.clipboard.writeText(code);button.classList.add('copied');button.title='已复制';setTimeout(()=>{button.classList.remove('copied');button.title='复制代码'},1200)});pre.append(button)})}
+	if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enhanceCode);else enhanceCode();
 </script>
-<style>
-	.site-header{height:var(--header-height);display:flex;align-items:center}.site-header nav{width:min(var(--nav-width),calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:2rem}.wordmark{font-family:Georgia,'Times New Roman','Songti SC',serif;font-size:1.55rem;font-weight:700;font-style:italic;letter-spacing:-.04em;color:var(--primary);text-decoration:none}.nav-actions,.internal-links{display:flex;align-items:center;gap:.5rem}.internal-links a{padding:.5rem .75rem;border-radius:999px;color:var(--secondary);font-family:Georgia,'Songti SC',serif;font-size:.92rem;text-decoration:none;transition:background-color 160ms ease,color 160ms ease}.internal-links a:hover,.internal-links a.active{background:var(--surface-muted);color:var(--primary)}.theme-toggle{display:grid;place-items:center;width:36px;height:36px;margin-left:.3rem;padding:0;border:1px solid var(--border-soft);border-radius:50%;background:transparent;color:var(--secondary);cursor:pointer;transition:background-color 160ms ease,color 160ms ease}.theme-toggle:hover{background:var(--surface-muted);color:var(--primary)}.theme-toggle svg{width:17px;height:17px}.sun,html[data-theme='dark'] .moon{display:none}html[data-theme='dark'] .sun{display:block}@media(max-width:640px){.site-header nav{width:min(100% - 24px,var(--nav-width))}.wordmark{font-size:1.15rem}.internal-links{gap:0}.internal-links a{padding:.45rem;font-size:.82rem}.internal-links a:nth-last-child(1){display:none}.theme-toggle{width:32px;height:32px}}
-</style>
+<style>.site-header{height:var(--header-height);display:flex;align-items:center}.site-header nav{width:min(var(--nav-width),calc(100% - 40px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:2rem}.wordmark{font-family:Georgia,'Times New Roman','Songti SC',serif;font-size:1.55rem;font-weight:700;font-style:italic;letter-spacing:-.04em;color:var(--primary);text-decoration:none}.nav-actions,.internal-links{display:flex;align-items:center;gap:.3rem}.internal-links a{padding:.5rem .68rem;border-radius:999px;color:var(--secondary);font-family:Georgia,'Songti SC',serif;font-size:.9rem;text-decoration:none;transition:background-color 160ms ease,color 160ms ease}.internal-links a:hover,.internal-links a.active{background:var(--surface-muted);color:var(--primary)}.theme-toggle{display:grid;place-items:center;width:36px;height:36px;margin-left:.3rem;padding:0;border:1px solid var(--border-soft);border-radius:50%;background:transparent;color:var(--secondary);cursor:pointer;transition:background-color 160ms ease,color 160ms ease}.theme-toggle:hover{background:var(--surface-muted);color:var(--primary)}.theme-toggle svg{width:17px;height:17px}.sun,html[data-theme='dark'] .moon{display:none}html[data-theme='dark'] .sun{display:block}@media(max-width:720px){.site-header nav{width:min(100% - 24px,var(--nav-width))}.wordmark{font-size:1.15rem}.internal-links{gap:0}.internal-links a{padding:.45rem;font-size:.8rem}.internal-links a:nth-last-child(1),.internal-links a:nth-child(3){display:none}.theme-toggle{width:32px;height:32px}}</style>
+

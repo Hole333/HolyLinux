@@ -5,6 +5,7 @@ import { defineConfig, fontProviders, passthroughImageService } from 'astro/conf
 export default defineConfig({
   site: 'https://www.halomoon.cn',
   integrations: [mdx(), sitemap()],
+  markdown: { shikiConfig: { theme: 'github-dark', wrap: true } },
   image: { service: passthroughImageService() },
   fonts: [{
     provider: fontProviders.local(), name: 'Atkinson', cssVariable: '--font-atkinson', fallbacks: ['system-ui', 'sans-serif'],
@@ -14,3 +15,4 @@ export default defineConfig({
     ] },
   }],
 });
+

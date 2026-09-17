@@ -24,3 +24,8 @@ npm run build
 ## 线上地址
 
 https://www.halomoon.cn/
+
+## 编写文章
+
+请查看 [WRITING.md](./WRITING.md)，或访问网站的 /blog/writing-guide/。
+
