@@ -1,17 +1,17 @@
 ---
 title: 'HaloMoon 写作指南'
-description: '运行一条命令，写完文章后自动构建、提交并发布。'
+description: '双击一个文件，写完文章后自动构建、提交并发布。'
 pubDate: '2026-09-17'
 updatedDate: '2026-09-17'
 tags: ['写作', 'Markdown']
 ---
-现在发布文章只需要一条命令：
+最快方式是直接双击项目根目录中的：
 
-```powershell
-npm run publish
+```text
+发布文章.cmd
 ```
 
-脚本会依次询问文章标题、摘要、标签和链接名，然后自动打开记事本。**写完正文，保存并关闭记事本即可**，后续步骤全部自动完成：
+脚本会询问文章标题、摘要、标签和链接名，然后自动打开记事本。**写完正文，保存并关闭记事本即可**，后续步骤全部自动完成：
 
 ```text
 检查正文 → Astro 构建 → Git 提交 → 推送 GitHub → 自动部署服务器
@@ -19,12 +19,11 @@ npm run publish
 
 通常推送后等待一两分钟，新文章就会出现在网站中。
 
-## 实际操作
+## 命令行方式
 
-进入博客源码目录：
+也可以进入博客源码目录后运行：
 
 ```powershell
-cd C:\path\to\HolyLinux-Astro
 npm run publish
 ```
 
@@ -63,11 +62,9 @@ int main(void) {
 }
 ```
 
-常用语言标记包括 `bash`、`powershell`、`javascript`、`typescript`、`python`、`c`、`cpp` 和 `json`。
-
 ## 发布失败怎么办
 
-如果正文为空，脚本会保留文章文件但停止发布。补充正文后重新运行构建和推送即可：
+如果正文为空，脚本会保留文章文件但停止发布。补充正文后可以重新执行：
 
 ```powershell
 npm run build
