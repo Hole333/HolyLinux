@@ -68,7 +68,7 @@ const { text, class: className = '' } = Astro.props;
 	globalWindow.__holyTypewriterController.initAll();
 </script>
 <style>
-	.typewriter-text { max-width: 580px; margin: 0 auto; color: var(--secondary); font-size: 1rem; }
+	.typewriter-text { max-width: 580px; margin: 0 auto; color: var(--secondary); font-size: 1.3rem; }
 	.typewriter-stage { display: inline-grid; text-align: left; }
 	.typewriter-measure, .typewriter-line { grid-area: 1 / 1; }
 	.typewriter-measure { visibility: hidden; white-space: nowrap; }
@@ -76,5 +76,6 @@ const { text, class: className = '' } = Astro.props;
 	.typewriter-cursor { display: inline-block; width: 1px; height: 1.05em; margin-left: 3px; background: currentColor; vertical-align: -.12em; animation: cursor-blink 900ms step-end infinite; }
 	@keyframes cursor-blink { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
 	@media (prefers-reduced-motion: reduce) { .typewriter-cursor { animation: none; opacity: 1; } }
-	@media (max-width: 640px) { .typewriter-text { max-width: 320px; } }
+	@media (max-width: 640px) { .typewriter-text { max-width: 320px; font-size: 1.08rem; } }
 </style>
+
