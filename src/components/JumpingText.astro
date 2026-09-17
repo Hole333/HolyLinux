@@ -1,0 +1,43 @@
+---
+interface Props { text: string; class?: string; }
+const { text, class: className = '' } = Astro.props;
+const characters = Array.from(text);
+---
+<p class:list={['jumping-text', className]} aria-label={text}>
+	<span aria-hidden="true">
+		{characters.map((character, index) => (
+			<span class="jumping-character" style={`--character-index:${index}`}>
+				{character === ' ' ? '\u00A0' : character}
+			</span>
+		))}
+	</span>
+</p>
+<style>
+	.jumping-text {
+		max-width: 580px;
+		margin: 0 auto;
+		color: var(--secondary);
+		font-size: 1rem;
+	}
+	.jumping-text > span {
+		display: inline-flex;
+		justify-content: center;
+	}
+	.jumping-character {
+		display: inline-block;
+		will-change: transform;
+		animation: character-jump 4.8s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+		animation-delay: calc(var(--character-index) * 55ms);
+	}
+	@keyframes character-jump {
+		0%, 10%, 100% { transform: translateY(0); }
+		4% { transform: translateY(-7px); }
+		7% { transform: translateY(1px); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.jumping-character { animation: none; }
+	}
+	@media (max-width: 640px) {
+		.jumping-text { max-width: 320px; }
+	}
+</style>
