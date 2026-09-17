@@ -1,59 +1,62 @@
 ---
 title: 'HaloMoon 内容发布指南'
-description: '使用普通 Markdown 文件一键发布学习笔记和正式文章。'
+description: '使用普通 Markdown 一键发布到统一文章栏目，并支持公式、图片和 GFM。'
 pubDate: '2026-09-17'
 updatedDate: '2026-09-17'
 tags: ['写作', 'Markdown', 'GitHub']
 ---
-## 学习笔记：一键发布
+## Markdown 文章：一键发布
 
-直接把 Markdown 文件放入分类目录。例如：
+把 Markdown 文件放进独立内容仓库的分类目录：
 
 ```text
-notes/structured_light/my-note.md
+notes/structured_light/my-article.md
 ```
 
-Markdown 第一行的一级标题会成为博客标题，父文件夹会自动成为分类和标签：
+第一行一级标题自动成为文章标题，父文件夹自动成为分类和标签：
 
 ```markdown
-# 利用散斑嵌入条纹和查找表进行三维面形测量
+# 文章标题
 
-这里直接编写正文，不需要填写摘要、标签、Front Matter 或 URL。
+这里直接编写正文。
 ```
 
-写完后只运行一个文件。
-
-Windows：
+写完后运行：
 
 ```text
 publish-notes.cmd
 ```
 
-Linux：
+Linux 使用：
 
 ```bash
 ./publish-notes.sh
 ```
 
-发布器会自动生成博客所需元数据，提交全部 Markdown 改动，推送 GitHub 并触发部署。删除 Markdown 文件后运行同一个命令，对应博客页面也会删除。
-
-## 正式文章
-
-Windows：
+文章会统一显示在“文章”栏目，地址为：
 
 ```text
-publish-article.cmd
+/blog/structured_light/my-article/
 ```
 
-Linux：
+## 公式与图片
 
-```bash
-./publish-article.sh
+支持行内 LaTeX 公式：$E=mc^2$。
+
+块级公式：
+
+$$
+E=mc^2
+$$
+
+相对路径图片：
+
+```markdown
+![图片说明](image/example.png)
 ```
 
-也可以运行：
+同时支持 GFM 表格、任务列表、删除线、脚注、代码块、HTML 和远程图片。
 
-```bash
-npm run publish
-```
+## 博客仓库正式文章
 
+Windows 使用 `publish-article.cmd`，Linux 使用 `./publish-article.sh`，也可以运行 `npm run publish`。

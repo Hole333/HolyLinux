@@ -16,3 +16,13 @@ pre.code-window code,pre.code-window code span{font-family:inherit!important;fon
 @media (prefers-reduced-motion: reduce) {
 	::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* Rich Markdown */
+.prose table{display:block;overflow-x:auto;width:max-content;max-width:100%;margin:1.5rem 0;border-collapse:collapse;font-size:.92rem}
+.prose th,.prose td{padding:.55rem .8rem;border:1px solid var(--border-soft);text-align:left}.prose th{background:var(--surface-muted);color:var(--primary)}
+.prose ul.contains-task-list{padding-left:0;list-style:none}.prose .task-list-item{display:flex;align-items:flex-start;gap:.55rem}.prose .task-list-item input{margin-top:.55em}
+.prose img{display:block;margin:1.5rem auto;box-shadow:var(--shadow-soft)}
+.prose .katex-display{overflow-x:auto;overflow-y:hidden;margin:1.5rem 0;padding:.4rem 0}.prose .katex{font-size:1.02em}
+.prose .footnotes{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border-soft);font-size:.85rem;color:var(--secondary)}
+.prose del{color:var(--secondary)}
+@media(max-width:560px){.prose table{font-size:.82rem}.prose .katex-display{font-size:.9rem}}

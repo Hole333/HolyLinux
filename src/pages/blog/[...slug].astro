@@ -1,11 +1,36 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-export async function getStaticPaths(){const posts=await getCollection('blog');return posts.map(post=>({params:{slug:post.id},props:post}))}
-type Props=CollectionEntry<'blog'>;
-const post=Astro.props;
-const{Content,headings}=await render(post);
-const wordCount=(post.body??'').replace(/```[\s\S]*?```/g,'').replace(/[#*`>\[\]()_-]/g,'').replace(/\s/g,'').length;
-const readingTime=Math.max(1,Math.ceil(wordCount/500));
+
+type Props =
+	| { source: 'blog'; entry: CollectionEntry<'blog'> }
+	| { source: 'notes'; entry: CollectionEntry<'notes'> };
+
+export async function getStaticPaths() {
+	const [posts, notes] = await Promise.all([
+		getCollection('blog'),
+		getCollection('notes', ({ data }) => !data.draft),
+	]);
+	return [
+		...posts.map((entry) => ({ params: { slug: entry.id }, props: { source: 'blog' as const, entry } })),
+		...notes.map((entry) => ({ params: { slug: entry.id }, props: { source: 'notes' as const, entry } })),
+	];
+}
+
+const props = Astro.props;
+const rendered = await render(props.entry);
+const body = props.entry.body ?? '';
+const wordCount = body.replace(/```[\s\S]*?```/g, '').replace(/[#*`>\[\]()_$\\-]/g, '').replace(/\s/g, '').length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 500));
+const data = props.source === 'blog'
+	? props.entry.data
+	: {
+		title: props.entry.data.title,
+		description: props.entry.data.description,
+		pubDate: props.entry.data.created,
+		updatedDate: props.entry.data.updated,
+		tags: props.entry.data.tags,
+	};
+const Content = rendered.Content;
 ---
-<BlogPost {...post.data} headings={headings} readingTime={readingTime} wordCount={wordCount} slug={post.id}><Content/></BlogPost>
+<BlogPost {...data} headings={rendered.headings} readingTime={readingTime} wordCount={wordCount} slug={props.entry.id} canonicalPath={`/blog/${props.entry.id}/`}><Content/></BlogPost>

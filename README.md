@@ -4,16 +4,16 @@ HaloMoon 是一个使用 Astro 生成的轻量中文静态博客。
 
 ## 内容仓库
 
-- 博客源码与正式文章：[Hole333/HolyLinux](https://github.com/Hole333/HolyLinux)
-- Markdown 学习笔记：[Hole333/HaloMoon-Notes](https://github.com/Hole333/HaloMoon-Notes)
+- 博客源码：[Hole333/HolyLinux](https://github.com/Hole333/HolyLinux)
+- Markdown 文章：[Hole333/HaloMoon-Notes](https://github.com/Hole333/HaloMoon-Notes)
 
-笔记目录直接映射为博客路径：
+Markdown 的父文件夹作为分类，文件路径映射到统一文章栏目：
 
 ```text
-notes/linux/network.md → /notes/linux/network/
+notes/structured_light/measurement.md → /blog/structured_light/measurement/
 ```
 
-把普通 Markdown 文件放入分类目录后，Windows 双击 `publish-notes.cmd`，Linux 运行 `./publish-notes.sh`，即可自动补齐元数据、推送并部署。
+Windows 双击 `publish-notes.cmd`，Linux 运行 `./publish-notes.sh`，即可自动补齐元数据、推送并部署。
 
 ## 本地开发
 
@@ -22,15 +22,11 @@ npm install
 npm run dev
 ```
 
-启动前会自动拉取最新笔记。
-
 ## 构建
 
 ```bash
 npm run build
 ```
-
-生成结果位于 `dist/`。
 
 ## 线上地址
 
