@@ -1,6 +1,6 @@
-# HolyLinux
+# HaloMoon
 
-HolyLinux 是一个基于 [Astro](https://github.com/withastro/astro) 官方 `examples/blog` 模板构建的中文静态博客。
+HaloMoon 是一个基于 [Astro](https://github.com/withastro/astro) 官方 `examples/blog` 模板构建的中文静态博客。
 
 ## 本地开发
 
@@ -28,4 +28,5 @@ https://www.halomoon.cn/
 ## 编写文章
 
 请查看 [WRITING.md](./WRITING.md)，或访问网站的 /blog/writing-guide/。
+
 

@@ -29,7 +29,9 @@ const small = typeof size === 'number' && size < 72;
 		height="1254"
 		alt={alt}
 		draggable="false"
-		decoding="async"
+		decoding="sync"
+		loading="eager"
+		fetchpriority="high"
 	/>
 </span>
 
@@ -55,15 +57,25 @@ const small = typeof size === 'number' && size < 72;
 		const durations = [900, 450, 400, 250, 500, 500, 850, 550];
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const states = new WeakMap<HTMLElement, AvatarState>();
+		const preloadedImages = frames.map((src) => {
+			const image = new Image();
+			image.decoding = 'sync';
+			image.src = src;
+			return image;
+		});
 		const preload = Promise.all(
-			frames.map(
-				(src) =>
-					new Promise<void>((resolve) => {
-						const image = new Image();
-						image.onload = image.onerror = () => resolve();
-						image.src = src;
-					}),
-			),
+			preloadedImages.map(async (image) => {
+				try {
+					await image.decode();
+				} catch {
+					if (!image.complete) {
+						await new Promise<void>((resolve) => {
+							image.onload = image.onerror = () => resolve();
+						});
+					}
+					try { await image.decode(); } catch { /* keep the static fallback */ }
+				}
+			}),
 		);
 
 		const stop = (avatar: HTMLElement) => {
@@ -72,6 +84,7 @@ const small = typeof size === 'number' && size < 72;
 			if (state) state.token += 1;
 			const image = avatar.querySelector<HTMLImageElement>('img');
 			if (image) image.src = staticFrame;
+			avatar.dataset.frame = 'static';
 		};
 
 		const start = async (avatar: HTMLElement) => {
@@ -88,15 +101,18 @@ const small = typeof size === 'number' && size < 72;
 			states.set(avatar, state);
 			const token = state.token;
 			await preload;
+			avatar.dataset.preloaded = 'true';
 			if (!avatar.isConnected || state.token !== token || reducedMotion.matches) return;
 
 			let current = 0;
-			image.src = frames[current];
+			image.src = preloadedImages[current].src;
+			avatar.dataset.frame = String(current + 1);
 			const schedule = () => {
 				state.timer = window.setTimeout(() => {
 					if (!avatar.isConnected || state.token !== token) return;
 					current = (current + 1) % frames.length;
-					image.src = frames[current];
+					image.src = preloadedImages[current].src;
+			avatar.dataset.frame = String(current + 1);
 					schedule();
 				}, durations[current]);
 			};
@@ -152,3 +168,7 @@ const small = typeof size === 'number' && size < 72;
 		}
 	}
 </style>
+
+
+
+

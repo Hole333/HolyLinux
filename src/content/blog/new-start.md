@@ -1,11 +1,11 @@
 ---
-title: 'HolyLinux：新的开始'
+title: 'HaloMoon：新的开始'
 description: '从动态博客迁移到 Astro，用更少的运行组件保存更长久的内容。'
 pubDate: '2026-09-16'
 heroImage: '../../assets/new-start.svg'
 tags: ['Astro', '博客']
 ---
-今天，HolyLinux 正式迁移到 Astro。
+今天，HaloMoon 正式迁移到 Astro。
 
 之前的博客需要 Java 进程和数据库持续运行。新的版本在发布时生成普通的 HTML、CSS 和少量 JavaScript，访问文章时不再查询数据库。
 
@@ -19,5 +19,6 @@ tags: ['Astro', '博客']
 - 更换托管平台时更容易迁移。
 
 接下来，这里会逐步记录 Linux、服务器和开发相关的实践。
+
 
 

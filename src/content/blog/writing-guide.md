@@ -1,10 +1,10 @@
 ---
-title: 'HolyLinux 写作指南'
-description: '如何使用 Markdown 编写、预览并发布 HolyLinux 文章。'
+title: 'HaloMoon 写作指南'
+description: '如何使用 Markdown 编写、预览并发布 HaloMoon 文章。'
 pubDate: '2026-09-17'
 tags: ['写作', 'Markdown']
 ---
-HolyLinux 的文章都保存在 `src/content/blog/` 目录中。每篇文章是一个普通的 Markdown 文件，可以使用任意文本编辑器编写。
+HaloMoon 的文章都保存在 `src/content/blog/` 目录中。每篇文章是一个普通的 Markdown 文件，可以使用任意文本编辑器编写。
 
 ## 1. 新建文章
 
@@ -53,7 +53,7 @@ heroImage: '../../assets/your-cover.svg'
 #include <stdio.h>
 
 int main(void) {
-    printf("Hello, HolyLinux!\n");
+    printf("Hello, HaloMoon!\n");
     return 0;
 }
 ```
@@ -92,3 +92,4 @@ git push
 ```
 
 构建成功后，静态文件位于 `dist/`。服务器发布时只需要替换当前静态 release，不需要数据库。
+

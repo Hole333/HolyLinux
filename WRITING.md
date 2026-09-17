@@ -1,4 +1,4 @@
-# HolyLinux 写作指南
+# HaloMoon 写作指南
 
 完整的网页版本位于 `/blog/writing-guide/`。
 
@@ -25,3 +25,4 @@ tags: ['Linux']
 
 正文内容。
 ```
+
