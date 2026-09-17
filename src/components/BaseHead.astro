@@ -36,6 +36,13 @@ const { title, description, image = FallbackImage } = Astro.props;
 <script is:inline>
 	const saved = localStorage.getItem('halomoon-theme') ?? localStorage.getItem('holylinux-theme');
 	document.documentElement.dataset.theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+	if (!window.__haloThemeSwapBound) {
+		window.__haloThemeSwapBound = true;
+		document.addEventListener('astro:before-swap', (event) => {
+			const theme = document.documentElement.dataset.theme;
+			if (theme) event.newDocument.documentElement.dataset.theme = theme;
+		});
+	}
 </script>
 <ClientRouter />
 <SiteEffects />
