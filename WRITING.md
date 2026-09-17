@@ -10,7 +10,14 @@ HaloMoon 的长篇文章和学习笔记分开管理：
 打开 `HaloMoon-Notes` 文件夹，双击：
 
 ```text
-管理笔记.cmd
+manage-notes.cmd
+```
+
+Linux：
+
+```bash
+chmod +x manage-notes.sh
+./manage-notes.sh
 ```
 
 选择“新建笔记并发布”，写完 Markdown 后保存。脚本会提交并推送 GitHub，随后自动更新博客。
@@ -26,7 +33,14 @@ notes/linux/network.md → /notes/linux/network/
 在博客项目根目录双击：
 
 ```text
-发布文章.cmd
+publish-article.cmd
+```
+
+Linux：
+
+```bash
+chmod +x publish-article.sh
+./publish-article.sh
 ```
 
 也可以运行：

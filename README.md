@@ -13,7 +13,7 @@ HaloMoon 是一个使用 Astro 生成的轻量中文静态博客。
 notes/linux/network.md → /notes/linux/network/
 ```
 
-双击笔记仓库中的 `管理笔记.cmd`，即可新建、删除、拉取或同步笔记。推送后 GitHub Actions 会自动构建并部署网站。
+Windows 使用 `manage-notes.cmd`，Linux 使用 `./manage-notes.sh`，即可新建、删除、拉取或同步笔记。推送后 GitHub Actions 会自动构建并部署网站。
 
 ## 本地开发
 

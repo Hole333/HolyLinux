@@ -15,7 +15,14 @@ HaloMoon 将内容分为两类：
 进入 `HaloMoon-Notes` 文件夹，双击：
 
 ```text
-管理笔记.cmd
+manage-notes.cmd
+```
+
+在 Linux 中运行：
+
+```bash
+chmod +x manage-notes.sh
+./manage-notes.sh
 ```
 
 选择“新建笔记并发布”，输入分类、标题和链接名，写完 Markdown 后保存。脚本会自动提交并推送 GitHub，GitHub Actions 随后重新构建并部署博客。
@@ -34,7 +41,14 @@ notes/linux/network.md
 在博客源码目录双击：
 
 ```text
-发布文章.cmd
+publish-article.cmd
+```
+
+在 Linux 中运行：
+
+```bash
+chmod +x publish-article.sh
+./publish-article.sh
 ```
 
 也可以运行：
