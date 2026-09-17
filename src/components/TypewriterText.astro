@@ -1,0 +1,80 @@
+---
+interface Props { text: string; class?: string; }
+const { text, class: className = '' } = Astro.props;
+---
+<p class:list={['typewriter-text', className]} data-typewriter-text data-text={text} aria-label={text}>
+	<span class="typewriter-stage" aria-hidden="true">
+		<span class="typewriter-measure">{text}</span>
+		<span class="typewriter-line"><span data-typewriter-output></span><span class="typewriter-cursor"></span></span>
+	</span>
+	<noscript>{text}</noscript>
+</p>
+<script>
+	type TypewriterController = { initAll: () => void; cleanupAll: () => void };
+	type TypewriterWindow = Window & { __holyTypewriterController?: TypewriterController };
+	const globalWindow = window as TypewriterWindow;
+
+	if (!globalWindow.__holyTypewriterController) {
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const timers = new WeakMap<HTMLElement, number>();
+		const delays = [105, 82, 128, 94, 116, 76, 132, 88, 190];
+
+		const stop = (element: HTMLElement) => {
+			const timer = timers.get(element);
+			if (timer !== undefined) window.clearTimeout(timer);
+			timers.delete(element);
+		};
+
+		const start = (element: HTMLElement) => {
+			stop(element);
+			const output = element.querySelector<HTMLElement>('[data-typewriter-output]');
+			const text = element.dataset.text ?? '';
+			if (!output) return;
+			if (reducedMotion.matches) {
+				output.textContent = text;
+				element.dataset.complete = 'true';
+				return;
+			}
+
+			output.textContent = '';
+			element.dataset.complete = 'false';
+			const characters = Array.from(text);
+			let index = 0;
+			const typeNext = () => {
+				if (!element.isConnected) return;
+				output.textContent += characters[index] ?? '';
+				index += 1;
+				if (index >= characters.length) {
+					element.dataset.complete = 'true';
+					timers.delete(element);
+					return;
+				}
+				const timer = window.setTimeout(typeNext, delays[(index - 1) % delays.length]);
+				timers.set(element, timer);
+			};
+			const timer = window.setTimeout(typeNext, 280);
+			timers.set(element, timer);
+		};
+
+		const elements = () => Array.from(document.querySelectorAll<HTMLElement>('[data-typewriter-text]'));
+		const initAll = () => elements().forEach(start);
+		const cleanupAll = () => elements().forEach(stop);
+		globalWindow.__holyTypewriterController = { initAll, cleanupAll };
+		document.addEventListener('astro:before-swap', cleanupAll);
+		document.addEventListener('astro:page-load', initAll);
+		reducedMotion.addEventListener('change', initAll);
+	}
+
+	globalWindow.__holyTypewriterController.initAll();
+</script>
+<style>
+	.typewriter-text { max-width: 580px; margin: 0 auto; color: var(--secondary); font-size: 1rem; }
+	.typewriter-stage { display: inline-grid; text-align: left; }
+	.typewriter-measure, .typewriter-line { grid-area: 1 / 1; }
+	.typewriter-measure { visibility: hidden; white-space: nowrap; }
+	.typewriter-line { justify-self: start; white-space: nowrap; }
+	.typewriter-cursor { display: inline-block; width: 1px; height: 1.05em; margin-left: 3px; background: currentColor; vertical-align: -.12em; animation: cursor-blink 900ms step-end infinite; }
+	@keyframes cursor-blink { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
+	@media (prefers-reduced-motion: reduce) { .typewriter-cursor { animation: none; opacity: 1; } }
+	@media (max-width: 640px) { .typewriter-text { max-width: 320px; } }
+</style>

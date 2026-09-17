@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import LazyTuxAvatar from '../components/LazyTuxAvatar.astro';
-import JumpingText from '../components/JumpingText.astro';
+import TypewriterText from '../components/TypewriterText.astro';
 import SocialIcon from '../components/SocialIcon.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 const socials=[
@@ -14,7 +14,8 @@ const socials=[
 	{key:'rss',label:'RSS',href:SOCIAL_LINKS.rss},
 ] as const;
 ---
-<!doctype html><html lang="zh-CN"><head><BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION}/></head><body class="home-page"><Header/><main class="profile-main"><section class="profile" aria-labelledby="profile-name"><LazyTuxAvatar class="profile-avatar" size={150} animated={true} alt="躺平企鹅头像" /><h1 id="profile-name">HolyLinux</h1><JumpingText text="欢迎来到我的小站！" /><nav class="socials" aria-label="社交链接">{socials.map(item=>item.href?<a href={item.href} aria-label={item.label} title={item.label} target={item.href.startsWith('http')?'_blank':undefined} rel={item.href.startsWith('http')?'noreferrer':undefined}><SocialIcon name={item.key}/></a>:<span class="disabled" aria-label={`${item.label} 尚未配置`} title={`${item.label}：在 src/consts.ts 中配置链接`}><SocialIcon name={item.key}/></span>)}</nav></section></main><Footer/></body></html>
+<!doctype html><html lang="zh-CN"><head><BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION}/></head><body class="home-page"><Header/><main class="profile-main"><section class="profile" aria-labelledby="profile-name"><LazyTuxAvatar class="profile-avatar" size={150} animated={true} alt="躺平企鹅头像" /><h1 id="profile-name">HolyLinux</h1><TypewriterText text="欢迎来到我的小站！" /><nav class="socials" aria-label="社交链接">{socials.map(item=>item.href?<a href={item.href} aria-label={item.label} title={item.label} target={item.href.startsWith('http')?'_blank':undefined} rel={item.href.startsWith('http')?'noreferrer':undefined}><SocialIcon name={item.key}/></a>:<span class="disabled" aria-label={`${item.label} 尚未配置`} title={`${item.label}：在 src/consts.ts 中配置链接`}><SocialIcon name={item.key}/></span>)}</nav></section></main><Footer/></body></html>
 <style>.profile-main{display:grid;place-items:center;min-height:calc(100vh - var(--header-height) - var(--footer-height));padding-block:2rem}.profile{text-align:center}.profile :global(.profile-avatar){margin-bottom:1rem}.profile h1{margin:.2rem 0 .35rem;font-size:2.15rem}.socials{display:flex;justify-content:center;align-items:center;gap:1.05rem;margin-top:1.15rem}.socials a,.socials span{display:grid;place-items:center;width:30px;height:30px;color:var(--secondary);transition:color 150ms ease,transform 150ms ease}.socials :global(svg){width:22px;height:22px}.socials a:hover{color:var(--primary);transform:translateY(-2px)}.socials .disabled{cursor:not-allowed;opacity:.42}@media(max-width:640px){.profile :global(.profile-avatar){--lazy-tux-size:120px!important}.profile h1{font-size:1.85rem}}</style>
+
 
 
