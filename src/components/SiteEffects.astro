@@ -1,0 +1,158 @@
+<script>
+	type TrailPoint = { x: number; y: number; born: number };
+	type Particle = { x: number; y: number; vx: number; vy: number; born: number };
+	type SiteEffectsController = { init: () => void; cleanup: () => void };
+	type SiteWindow = Window & { __haloSiteEffects?: SiteEffectsController };
+	const siteWindow = window as SiteWindow;
+
+	if (!siteWindow.__haloSiteEffects) {
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+		let canvas: HTMLCanvasElement | null = null;
+		let context: CanvasRenderingContext2D | null = null;
+		let frame = 0;
+		let points: TrailPoint[] = [];
+		let particles: Particle[] = [];
+		let lastPoint = { x: 0, y: 0, time: 0 };
+
+		const effectColor = () =>
+			getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim() || '#bcb5a9';
+
+		const resize = () => {
+			if (!canvas || !context) return;
+			const ratio = Math.min(window.devicePixelRatio || 1, 2);
+			canvas.width = Math.round(window.innerWidth * ratio);
+			canvas.height = Math.round(window.innerHeight * ratio);
+			canvas.style.width = `${window.innerWidth}px`;
+			canvas.style.height = `${window.innerHeight}px`;
+			context.setTransform(ratio, 0, 0, ratio, 0, 0);
+		};
+
+		const ensureCanvas = () => {
+			if (canvas?.isConnected) return;
+			canvas = document.createElement('canvas');
+			canvas.className = 'pointer-effects-canvas';
+			canvas.setAttribute('aria-hidden', 'true');
+			Object.assign(canvas.style, {
+				position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '9998',
+			});
+			document.body.append(canvas);
+			context = canvas.getContext('2d');
+			resize();
+		};
+
+		const render = (now: number) => {
+			frame = 0;
+			if (!canvas || !context) return;
+			context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+			const color = effectColor();
+			points = points.filter((point) => now - point.born < 430);
+			particles = particles.filter((particle) => now - particle.born < 520);
+
+			for (const point of points) {
+				const progress = (now - point.born) / 430;
+				context.globalAlpha = (1 - progress) * 0.32;
+				context.fillStyle = color;
+				context.beginPath();
+				context.arc(point.x, point.y, Math.max(0.5, 2.7 * (1 - progress)), 0, Math.PI * 2);
+				context.fill();
+			}
+
+			for (const particle of particles) {
+				const seconds = (now - particle.born) / 1000;
+				const progress = (now - particle.born) / 520;
+				context.globalAlpha = (1 - progress) * 0.62;
+				context.fillStyle = color;
+				context.beginPath();
+				context.arc(
+					particle.x + particle.vx * seconds,
+					particle.y + particle.vy * seconds + 26 * seconds * seconds,
+					Math.max(0.5, 2.5 * (1 - progress)), 0, Math.PI * 2,
+				);
+				context.fill();
+			}
+			context.globalAlpha = 1;
+			if (points.length || particles.length) frame = requestAnimationFrame(render);
+		};
+
+		const requestRender = () => {
+			if (!frame) frame = requestAnimationFrame(render);
+		};
+
+		const onPointerMove = (event: PointerEvent) => {
+			if (reduceMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
+			ensureCanvas();
+			const now = performance.now();
+			const distance = Math.hypot(event.clientX - lastPoint.x, event.clientY - lastPoint.y);
+			if (distance < 10 && now - lastPoint.time < 28) return;
+			lastPoint = { x: event.clientX, y: event.clientY, time: now };
+			points.push({ x: event.clientX, y: event.clientY, born: now });
+			if (points.length > 28) points.shift();
+			requestRender();
+		};
+
+		const onPointerDown = (event: PointerEvent) => {
+			if (event.button !== 0 || reduceMotion.matches || !finePointer.matches) return;
+			ensureCanvas();
+			const ring = document.createElement('span');
+			ring.className = 'click-ring';
+			ring.style.left = `${event.clientX}px`;
+			ring.style.top = `${event.clientY}px`;
+			document.body.append(ring);
+			ring.animate([
+				{ transform: 'translate(-50%, -50%) scale(.72)', opacity: .72 },
+				{ transform: 'translate(-50%, -50%) scale(1.55)', opacity: 0 },
+			], { duration: 260, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }).onfinish = () => ring.remove();
+			const now = performance.now();
+			for (let index = 0; index < 8; index += 1) {
+				const angle = (Math.PI * 2 * index) / 8;
+				particles.push({ x: event.clientX, y: event.clientY, vx: Math.cos(angle) * 42, vy: Math.sin(angle) * 42, born: now });
+			}
+			requestRender();
+		};
+
+		const bindTheme = () => {
+			document.querySelectorAll<HTMLButtonElement>('.theme-toggle:not([data-bound])').forEach((button) => {
+				button.dataset.bound = 'true';
+				button.addEventListener('click', () => {
+					const root = document.documentElement;
+					const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+					root.dataset.theme = next;
+					localStorage.setItem('halomoon-theme', next);
+				});
+			});
+		};
+
+		const enhanceCode = () => {
+			document.querySelectorAll<HTMLPreElement>('pre:not([data-enhanced])').forEach((pre) => {
+				pre.dataset.enhanced = 'true';
+				pre.classList.add('code-window');
+				const button = document.createElement('button');
+				button.type = 'button'; button.className = 'copy-code'; button.ariaLabel = '复制代码'; button.title = '复制代码';
+				button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
+				button.addEventListener('click', async () => {
+					await navigator.clipboard.writeText(pre.querySelector('code')?.textContent ?? '');
+					button.classList.add('copied'); button.title = '已复制';
+					window.setTimeout(() => { button.classList.remove('copied'); button.title = '复制代码'; }, 1200);
+				});
+				pre.append(button);
+			});
+		};
+
+		const init = () => { ensureCanvas(); bindTheme(); enhanceCode(); };
+		const cleanup = () => {
+			if (frame) cancelAnimationFrame(frame);
+			frame = 0; points = []; particles = [];
+			canvas?.remove(); canvas = null; context = null;
+		};
+		siteWindow.__haloSiteEffects = { init, cleanup };
+		document.addEventListener('pointermove', onPointerMove, { passive: true });
+		document.addEventListener('pointerdown', onPointerDown, { passive: true });
+		window.addEventListener('resize', resize, { passive: true });
+		document.addEventListener('astro:before-swap', cleanup);
+		document.addEventListener('astro:page-load', init);
+	}
+
+	siteWindow.__haloSiteEffects.init();
+</script>
+

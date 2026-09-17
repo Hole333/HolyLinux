@@ -1,40 +1,45 @@
 ---
 title: 'HaloMoon 写作指南'
-description: '如何使用 Markdown 编写、预览并发布 HaloMoon 文章。'
-pubDate: '2026-09-17'
-tags: ['写作', 'Markdown']
----
-HaloMoon 的文章都保存在 `src/content/blog/` 目录中。每篇文章是一个普通的 Markdown 文件，可以使用任意文本编辑器编写。
-
-## 1. 新建文章
-
-在 `src/content/blog/` 中创建文件，文件名使用简短的英文或拼音，例如：
-
-```text
-src/content/blog/linux-network-notes.md
-```
-
-文章开头必须包含 Front Matter：
-
-```yaml
----
-title: 'Linux 网络配置笔记'
-description: '记录一次服务器网络配置的过程与排错方法。'
+description: '运行一条命令，写完文章后自动构建、提交并发布。'
 pubDate: '2026-09-17'
 updatedDate: '2026-09-17'
-tags: ['Linux', '网络']
+tags: ['写作', 'Markdown']
 ---
+现在发布文章只需要一条命令：
+
+```powershell
+npm run publish
 ```
 
-`updatedDate` 可以省略。需要封面时，将图片放入 `src/assets/`，并增加：
+脚本会依次询问文章标题、摘要、标签和链接名，然后自动打开记事本。**写完正文，保存并关闭记事本即可**，后续步骤全部自动完成：
 
-```yaml
-heroImage: '../../assets/your-cover.svg'
+```text
+检查正文 → Astro 构建 → Git 提交 → 推送 GitHub → 自动部署服务器
 ```
 
-## 2. 编写正文
+通常推送后等待一两分钟，新文章就会出现在网站中。
 
-正文使用标准 Markdown：
+## 实际操作
+
+进入博客源码目录：
+
+```powershell
+cd C:\path\to\HolyLinux-Astro
+npm run publish
+```
+
+根据提示输入：
+
+```text
+文章标题：Linux 网络配置笔记
+一句话摘要：记录服务器网络配置和排错过程
+标签：Linux,网络
+英文链接名：linux-network-notes
+```
+
+链接名可以直接回车使用自动生成的值。记事本打开后，只写正文即可，不需要手动处理 Front Matter。
+
+## Markdown 示例
 
 ```markdown
 ## 二级标题
@@ -47,7 +52,7 @@ heroImage: '../../assets/your-cover.svg'
 > 这里是一段引用。
 ```
 
-代码块需要标注语言，网站会自动完成语法高亮：
+代码块需要标注语言：
 
 ```c
 #include <stdio.h>
@@ -60,36 +65,13 @@ int main(void) {
 
 常用语言标记包括 `bash`、`powershell`、`javascript`、`typescript`、`python`、`c`、`cpp` 和 `json`。
 
-## 3. 本地预览
+## 发布失败怎么办
 
-第一次使用时安装依赖：
-
-```powershell
-npm install
-```
-
-启动后台预览：
-
-```powershell
-npx astro dev --background
-```
-
-浏览器访问 `http://127.0.0.1:4321/`。完成后停止预览：
-
-```powershell
-npx astro dev stop
-```
-
-## 4. 构建和提交
-
-发布前执行：
+如果正文为空，脚本会保留文章文件但停止发布。补充正文后重新运行构建和推送即可：
 
 ```powershell
 npm run build
 git add .
-git commit -m "docs: add linux network notes"
+git commit -m "docs: publish article"
 git push
 ```
-
-构建成功后，静态文件位于 `dist/`。服务器发布时只需要替换当前静态 release，不需要数据库。
-

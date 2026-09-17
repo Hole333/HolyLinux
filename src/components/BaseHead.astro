@@ -6,6 +6,8 @@ import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import SiteEffects from './SiteEffects.astro';
 
 interface Props {
 	title: string;
@@ -32,9 +34,11 @@ const { title, description, image = FallbackImage } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 <script is:inline>
-	const saved = localStorage.getItem('holylinux-theme');
+	const saved = localStorage.getItem('halomoon-theme') ?? localStorage.getItem('holylinux-theme');
 	document.documentElement.dataset.theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 </script>
+<ClientRouter />
+<SiteEffects />
 
 <Font cssVariable="--font-atkinson" preload />
 
@@ -54,4 +58,5 @@ const { title, description, image = FallbackImage } = Astro.props;
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
+
 
