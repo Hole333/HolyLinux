@@ -1,0 +1,154 @@
+---
+interface Props {
+	size?: number | string;
+	animated?: boolean;
+	class?: string;
+	alt?: string;
+}
+
+const {
+	size = 150,
+	animated = true,
+	class: className = '',
+	alt = '躺平企鹅头像',
+} = Astro.props;
+const cssSize = typeof size === 'number' ? `${size}px` : size;
+const small = typeof size === 'number' && size < 72;
+---
+
+<span
+	class:list={['lazy-tux-avatar', className]}
+	style={`--lazy-tux-size: ${cssSize}`}
+	data-lazy-tux-avatar
+	data-animated={String(animated)}
+	data-small={String(small)}
+>
+	<img
+		src="/avatar/tux-lazy/static.png"
+		width="1254"
+		height="1254"
+		alt={alt}
+		draggable="false"
+		decoding="async"
+	/>
+</span>
+
+<script>
+	type AvatarState = { timer: number | null; token: number };
+	type TuxController = { initAll: () => void; cleanupAll: () => void };
+	type TuxWindow = Window & { __lazyTuxController?: TuxController };
+
+	const globalWindow = window as TuxWindow;
+
+	if (!globalWindow.__lazyTuxController) {
+		const staticFrame = '/avatar/tux-lazy/static.png';
+		const frames = [
+			'/avatar/tux-lazy/frame-01.png',
+			'/avatar/tux-lazy/frame-02.png',
+			'/avatar/tux-lazy/frame-03.png',
+			'/avatar/tux-lazy/frame-04.png',
+			'/avatar/tux-lazy/frame-05.png',
+			'/avatar/tux-lazy/frame-06.png',
+			'/avatar/tux-lazy/frame-07.png',
+			'/avatar/tux-lazy/frame-08.png',
+		];
+		const durations = [900, 450, 400, 250, 500, 500, 850, 550];
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const states = new WeakMap<HTMLElement, AvatarState>();
+		const preload = Promise.all(
+			frames.map(
+				(src) =>
+					new Promise<void>((resolve) => {
+						const image = new Image();
+						image.onload = image.onerror = () => resolve();
+						image.src = src;
+					}),
+			),
+		);
+
+		const stop = (avatar: HTMLElement) => {
+			const state = states.get(avatar);
+			if (state?.timer !== null && state?.timer !== undefined) window.clearTimeout(state.timer);
+			if (state) state.token += 1;
+			const image = avatar.querySelector<HTMLImageElement>('img');
+			if (image) image.src = staticFrame;
+		};
+
+		const start = async (avatar: HTMLElement) => {
+			stop(avatar);
+			if (
+				avatar.dataset.animated !== 'true' ||
+				avatar.dataset.small === 'true' ||
+				reducedMotion.matches
+			) return;
+
+			const image = avatar.querySelector<HTMLImageElement>('img');
+			if (!image) return;
+			const state: AvatarState = { timer: null, token: 0 };
+			states.set(avatar, state);
+			const token = state.token;
+			await preload;
+			if (!avatar.isConnected || state.token !== token || reducedMotion.matches) return;
+
+			let current = 0;
+			image.src = frames[current];
+			const schedule = () => {
+				state.timer = window.setTimeout(() => {
+					if (!avatar.isConnected || state.token !== token) return;
+					current = (current + 1) % frames.length;
+					image.src = frames[current];
+					schedule();
+				}, durations[current]);
+			};
+			schedule();
+		};
+
+		const avatars = () =>
+			Array.from(document.querySelectorAll<HTMLElement>('[data-lazy-tux-avatar]'));
+		const initAll = () => avatars().forEach(start);
+		const cleanupAll = () => avatars().forEach(stop);
+		globalWindow.__lazyTuxController = { initAll, cleanupAll };
+
+		document.addEventListener('astro:before-swap', cleanupAll);
+		document.addEventListener('astro:page-load', initAll);
+		reducedMotion.addEventListener('change', initAll);
+	}
+
+	globalWindow.__lazyTuxController.initAll();
+</script>
+
+<style>
+	.lazy-tux-avatar {
+		display: inline-block;
+		width: var(--lazy-tux-size);
+		height: var(--lazy-tux-size);
+		aspect-ratio: 1;
+		overflow: visible;
+		background: transparent;
+		line-height: 0;
+		vertical-align: middle;
+		transition: transform 180ms ease;
+	}
+
+	.lazy-tux-avatar img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		image-rendering: crisp-edges;
+		image-rendering: pixelated;
+		filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.16));
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.lazy-tux-avatar:hover {
+			transform: translateY(-2px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lazy-tux-avatar {
+			transition: none;
+		}
+	}
+</style>
