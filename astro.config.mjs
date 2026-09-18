@@ -4,6 +4,7 @@ import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
+import normalizeCodeLanguage from './src/lib/normalize-code-language';
 import { defineConfig, fontProviders, passthroughImageService } from 'astro/config';
 
 export default defineConfig({
@@ -16,7 +17,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       gfm: true,
-      remarkPlugins: [remarkMath],
+      remarkPlugins: [normalizeCodeLanguage, remarkMath],
       rehypePlugins: [rehypeKatex],
     }),
     shikiConfig: { theme: 'github-dark', wrap: true },
