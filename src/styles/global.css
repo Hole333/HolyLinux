@@ -26,3 +26,6 @@ pre.code-window code,pre.code-window code span{font-family:inherit!important;fon
 .prose .footnotes{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border-soft);font-size:.85rem;color:var(--secondary)}
 .prose del{color:var(--secondary)}
 @media(max-width:560px){.prose table{font-size:.82rem}.prose .katex-display{font-size:.9rem}}
+
+/* Keep spacing in terminal diagrams and Unicode art. */
+pre.astro-code[data-language="text"]{white-space:pre!important;word-wrap:normal!important;overflow-x:auto}
