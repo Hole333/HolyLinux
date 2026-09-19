@@ -29,3 +29,7 @@ pre.code-window code,pre.code-window code span{font-family:inherit!important;fon
 
 /* Keep spacing in terminal diagrams and Unicode art. */
 pre.astro-code[data-language="text"]{white-space:pre!important;word-wrap:normal!important;overflow-x:auto}
+
+/* Math is rendered output, not an editable text field. Hide the browser I-beam over formulas. */
+.katex,.katex *{caret-color:transparent}
+
