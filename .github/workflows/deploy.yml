@@ -43,7 +43,7 @@ jobs:
         run: |
           SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes -o IPQoS=throughput"
           for attempt in 1 2 3; do
-            timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "rm -f /home/$DEPLOY_USER/site.tar.gz" || true
+            timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "pkill -u $DEPLOY_USER -f 'scp -t /home/$DEPLOY_USER/site.tar.gz|sftp-server' || true; rm -f /home/$DEPLOY_USER/site.tar.gz" || true
             if timeout 180s scp -O $SSH_OPTS site.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/site.tar.gz"; then
               break
             fi
