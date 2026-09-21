@@ -36,24 +36,15 @@ jobs:
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
-      - name: Check remote disk and upload release
+      - name: Upload and activate release
         env:
           DEPLOY_HOST: ${{ secrets.HALOMOON_DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.HALOMOON_DEPLOY_USER }}
         run: |
-          SSH_OPTS="-o ConnectTimeout=15 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes"
-          ARCHIVE_BYTES=$(stat -c%s site.tar.gz)
-          ARCHIVE_KB=$(( (ARCHIVE_BYTES + 262144000) / 1024 ))
-          REMOTE_DF=$(timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "df -Pk /")
-          REMOTE_FREE_KB=$(printf '%s\n' "$REMOTE_DF" | awk 'NR==2 {print $4}')
-          echo "Remote free space: ${REMOTE_FREE_KB} KB; required: ${ARCHIVE_KB} KB"
-          if [ "$REMOTE_FREE_KB" -lt "$ARCHIVE_KB" ]; then
-            echo "Remote disk space is too low for a safe deployment." >&2
-            exit 1
-          fi
+          SSH_OPTS="-o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes -o IPQoS=throughput"
           for attempt in 1 2 3; do
-            timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "rm -f /home/$DEPLOY_USER/site.tar.gz"
-            if timeout 180s scp $SSH_OPTS site.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/site.tar.gz"; then
+            timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "rm -f /home/$DEPLOY_USER/site.tar.gz" || true
+            if timeout 180s scp -O $SSH_OPTS site.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/site.tar.gz"; then
               break
             fi
             if [ "$attempt" -eq 3 ]; then
@@ -65,9 +56,4 @@ jobs:
           LOCAL_SHA=$(sha256sum site.tar.gz | awk '{print $1}')
           REMOTE_SHA=$(timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "sha256sum /home/$DEPLOY_USER/site.tar.gz" | awk '{print $1}')
           test "$LOCAL_SHA" = "$REMOTE_SHA"
-      - name: Activate release
-        env:
-          DEPLOY_HOST: ${{ secrets.HALOMOON_DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.HALOMOON_DEPLOY_USER }}
-        run: |
-          timeout 120s ssh -o ConnectTimeout=15 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/deploy-halomoon $GITHUB_SHA"
+          timeout 120s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "sudo /usr/local/sbin/deploy-halomoon $GITHUB_SHA"
