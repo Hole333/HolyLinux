@@ -44,14 +44,15 @@ jobs:
           SSH_OPTS="-o ConnectTimeout=15 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o TCPKeepAlive=yes"
           ARCHIVE_BYTES=$(stat -c%s site.tar.gz)
           ARCHIVE_KB=$(( (ARCHIVE_BYTES + 262144000) / 1024 ))
-          REMOTE_FREE_KB=$(ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "df -Pk / | awk 'NR==2 {print \$4}'")
+          REMOTE_DF=$(timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "df -Pk /")
+          REMOTE_FREE_KB=$(printf '%s\n' "$REMOTE_DF" | awk 'NR==2 {print $4}')
           echo "Remote free space: ${REMOTE_FREE_KB} KB; required: ${ARCHIVE_KB} KB"
           if [ "$REMOTE_FREE_KB" -lt "$ARCHIVE_KB" ]; then
             echo "Remote disk space is too low for a safe deployment." >&2
             exit 1
           fi
           for attempt in 1 2 3; do
-            ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "rm -f /home/$DEPLOY_USER/site.tar.gz"
+            timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "rm -f /home/$DEPLOY_USER/site.tar.gz"
             if timeout 180s scp $SSH_OPTS site.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/site.tar.gz"; then
               break
             fi
@@ -62,7 +63,7 @@ jobs:
             sleep $((attempt * 5))
           done
           LOCAL_SHA=$(sha256sum site.tar.gz | awk '{print $1}')
-          REMOTE_SHA=$(ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "sha256sum /home/$DEPLOY_USER/site.tar.gz | awk '{print \$1}'")
+          REMOTE_SHA=$(timeout 30s ssh $SSH_OPTS "$DEPLOY_USER@$DEPLOY_HOST" "sha256sum /home/$DEPLOY_USER/site.tar.gz" | awk '{print $1}')
           test "$LOCAL_SHA" = "$REMOTE_SHA"
       - name: Activate release
         env:
